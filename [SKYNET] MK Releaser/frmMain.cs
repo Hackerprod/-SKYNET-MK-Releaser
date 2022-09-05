@@ -172,7 +172,6 @@ namespace SKYNET
                         {
                             LB_PingStatus.Text = pingReply.RoundtripTime.ToString() + " ms";
                             Thread.Sleep(1000);
-
                         }
                         else
                         {
