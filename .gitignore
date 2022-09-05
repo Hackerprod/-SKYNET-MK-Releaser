@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/-SKYNET-MK-Releaser/v16
+/.vs/[SKYNET] MK Releaser/v16/Server/sqlite3
+/.vs/[SKYNET] MK Releaser/v16/Server/sqlite3
+/packages/tik4net.3.5.0
+/.vs/[SKYNET] MK Releaser/v16/Server/sqlite3
+/.vs
