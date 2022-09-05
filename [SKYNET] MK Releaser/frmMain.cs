@@ -105,53 +105,62 @@ namespace SKYNET
 
         private void BT_Auth_Click(object sender, EventArgs e)
         {
-            try
+            if (!IPAddress.TryParse(TB_Host.Text, out _))
             {
-                if (!Connected)
+                Common.Show("The server ip address is not valid.");
+                return;
+            }
+            Task.Run(delegate
+            {
+                try
                 {
-                    connection.Open(TB_Host.Text, TB_Username.Text, TB_Password.Text);
-
-                    var sysRes = connection.LoadSingle<SystemResource>();
-
-                    string IPAddress = GetIPAddress();
-
-                    foreach (var AddressList in connection.LoadAll<FirewallAddressList>())
+                    if (!Connected)
                     {
-                        if (IPAddress == AddressList.Address)
+                        WriteLine($"Connecting to {TB_Host.Text}, please wait...");
+                        connection.Open(TB_Host.Text, TB_Username.Text, TB_Password.Text);
+
+                        var sysRes = connection.LoadSingle<SystemResource>();
+
+                        string IPAddress = GetIPAddress();
+
+                        foreach (var AddressList in connection.LoadAll<FirewallAddressList>())
                         {
-                            CurrentFirewallAddress = AddressList;
+                            if (IPAddress == AddressList.Address)
+                            {
+                                CurrentFirewallAddress = AddressList;
+                            }
                         }
+
+                        LB_Host.Text = TB_Host.Text;
+                        LB_ClientIP.Text = IPAddress;
+                        LB_Interface.Text = CurrentFirewallAddress == null ? "Unknown Firewall Address List" : CurrentFirewallAddress.List;
+                        LB_InterfaceComment.Text = CurrentFirewallAddress.Comment;
+                        LB_OSVersion.Text = sysRes == null ? "Unknown OS version" : sysRes.Version;
+                        LB_MikrotikModel.Text = sysRes == null ? "Unknown Mikrotik Model" : sysRes.BoardName;
+                        LB_BoardCores.Text = sysRes == null ? "Unknown Board Cores" : sysRes.CpuCount.ToString();
+                        LB_MemoryRAM.Text = sysRes == null ? "Unknown Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory);
+                        LB_TotalHddSpace.Text = sysRes == null ? "Unknown HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace);
+                        LB_ConnectionStatus.Text = "Connected";
+
+                        Connected = true;
+
+                        StartPing(TB_Host.Text);
+                        WriteLine($"Client {CurrentFirewallAddress.Address} connected successfully");
+
                     }
-
-                    LB_Host.Text = TB_Host.Text;
-                    LB_ClientIP.Text = IPAddress;
-                    LB_Interface.Text = CurrentFirewallAddress == null ? "Unknown Firewall Address List" : CurrentFirewallAddress.List;
-                    LB_InterfaceComment.Text = CurrentFirewallAddress.Comment;
-                    LB_OSVersion.Text = sysRes == null ? "Unknown OS version" : sysRes.Version;
-                    LB_MikrotikModel.Text = sysRes == null ? "Unknown Mikrotik Model" : sysRes.BoardName;
-                    LB_BoardCores.Text = sysRes == null ? "Unknown Board Cores" : sysRes.CpuCount.ToString();
-                    LB_MemoryRAM.Text = sysRes == null ? "Unknown Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory);
-                    LB_TotalHddSpace.Text = sysRes == null ? "Unknown HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace);
-                    LB_ConnectionStatus.Text = "Connected";
-
-                    Connected = true;
-
-                    StartPing(TB_Host.Text);
-                    WriteLine($"Client {CurrentFirewallAddress.Address} connected successfully");
-
+                    else
+                    {
+                        connection.Close();
+                        Connected = false;
+                    }
                 }
-                else
+                catch
                 {
-                    connection.Close();
+                    LB_ConnectionStatus.Text = "Disconnected";
                     Connected = false;
+                    WriteLine($"Error connecting to {TB_Host.Text}");
                 }
-            }
-            catch
-            {
-                LB_ConnectionStatus.Text = "Disconnected";
-                Connected = false;
-                WriteLine($"Error connecting {CurrentFirewallAddress.Address} client");
-            }
+            }); 
         }
 
         private void StartPing(string host)

@@ -226,7 +226,7 @@
             this.TB_Password.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(61)))), ((int)(((byte)(75)))));
             this.TB_Password.Color = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(61)))), ((int)(((byte)(75)))));
             this.TB_Password.ForeColor = System.Drawing.Color.White;
-            this.TB_Password.IsPassword = false;
+            this.TB_Password.IsPassword = true;
             this.TB_Password.Location = new System.Drawing.Point(30, 196);
             this.TB_Password.Logo = global::SKYNET.Properties.Resources.key_2_60px;
             this.TB_Password.LogoCursor = System.Windows.Forms.Cursors.Default;
@@ -299,7 +299,7 @@
             this.panel1.Controls.Add(this.BT_Release);
             this.panel1.Location = new System.Drawing.Point(281, 51);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(309, 299);
+            this.panel1.Size = new System.Drawing.Size(309, 305);
             this.panel1.TabIndex = 10;
             // 
             // LB_BoardCores
