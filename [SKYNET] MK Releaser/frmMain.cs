@@ -105,15 +105,16 @@ namespace SKYNET
 
         private void BT_Auth_Click(object sender, EventArgs e)
         {
-            if (!IPAddress.TryParse(TB_Host.Text, out _))
-            {
-                Common.Show("The server ip address is not valid.");
-                return;
-            }
+            BT_Auth.Enabled = false;
             Task.Run(delegate
             {
                 try
                 {
+                    if (!IPAddress.TryParse(TB_Host.Text, out _))
+                    {
+                        Common.Show("The server ip address is not valid.");
+                        return;
+                    }
                     if (!Connected)
                     {
                         WriteLine($"Connecting to {TB_Host.Text}, please wait...");
@@ -133,25 +134,28 @@ namespace SKYNET
 
                         LB_Host.Text = TB_Host.Text;
                         LB_ClientIP.Text = IPAddress;
-                        LB_Interface.Text = CurrentFirewallAddress == null ? "Unknown Firewall Address List" : CurrentFirewallAddress.List;
-                        LB_InterfaceComment.Text = CurrentFirewallAddress.Comment;
-                        LB_OSVersion.Text = sysRes == null ? "Unknown OS version" : sysRes.Version;
-                        LB_MikrotikModel.Text = sysRes == null ? "Unknown Mikrotik Model" : sysRes.BoardName;
-                        LB_BoardCores.Text = sysRes == null ? "Unknown Board Cores" : sysRes.CpuCount.ToString();
-                        LB_MemoryRAM.Text = sysRes == null ? "Unknown Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory);
-                        LB_TotalHddSpace.Text = sysRes == null ? "Unknown HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace);
+                        LB_Interface.Text = CurrentFirewallAddress == null ? "--- Firewall Address List" : CurrentFirewallAddress.List;
+                        LB_InterfaceComment.Text = CurrentFirewallAddress?.Comment;
+                        LB_OSVersion.Text = sysRes == null ? "--- OS version" : sysRes.Version;
+                        LB_MikrotikModel.Text = sysRes == null ? "--- Mikrotik Model" : sysRes.BoardName;
+                        LB_BoardCores.Text = sysRes == null ? "--- Board Cores" : sysRes.CpuCount.ToString();
+                        LB_MemoryRAM.Text = sysRes == null ? "--- Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory);
+                        LB_TotalHddSpace.Text = sysRes == null ? "--- HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace);
                         LB_ConnectionStatus.Text = "Connected";
 
                         Connected = true;
 
                         StartPing(TB_Host.Text);
-                        WriteLine($"Client {CurrentFirewallAddress.Address} connected successfully");
-
+                        WriteLine($"Client {CurrentFirewallAddress?.Address} connected successfully");
+                        BT_Release.Enabled = true;
                     }
                     else
                     {
                         connection.Close();
                         Connected = false;
+                        BT_Auth.Enabled = true;
+                        BT_Release.Enabled = false;
+                        WriteLine($"Client disconnected successfully");
                     }
                 }
                 catch
@@ -159,6 +163,7 @@ namespace SKYNET
                     LB_ConnectionStatus.Text = "Disconnected";
                     Connected = false;
                     WriteLine($"Error connecting to {TB_Host.Text}");
+                    BT_Auth.Enabled = true;
                 }
             }); 
         }
@@ -195,7 +200,8 @@ namespace SKYNET
                     }
                 }
             });
-            LB_PingStatus.Text = "Unknown"; 
+            LB_PingStatus.Text = "---";
+            BT_Auth.Enabled = true;
         }
 
         private void BT_Release_Click(object sender, EventArgs e)
@@ -220,17 +226,17 @@ namespace SKYNET
 
         private void ResetFields()
         {
-            LB_Host.Text = "Unknown";
-            LB_ClientIP.Text = "Unknown";
-            LB_Interface.Text = "Unknown";
-            LB_InterfaceComment.Text = "Unknown";
-            LB_OSVersion.Text = "Unknown";
-            LB_MikrotikModel.Text = "Unknown";
-            LB_ConnectionStatus.Text = "Unknown";
-            LB_PingStatus.Text = "Unknown";
-            LB_BoardCores.Text = "Unknown";
-            LB_MemoryRAM.Text = "Unknown";
-            LB_TotalHddSpace.Text = "Unknown";
+            LB_Host.Text = "---";
+            LB_ClientIP.Text = "---";
+            LB_Interface.Text = "---";
+            LB_InterfaceComment.Text = "---";
+            LB_OSVersion.Text = "---";
+            LB_MikrotikModel.Text = "---";
+            LB_ConnectionStatus.Text = "---";
+            LB_PingStatus.Text = "---";
+            LB_BoardCores.Text = "---";
+            LB_MemoryRAM.Text = "---";
+            LB_TotalHddSpace.Text = "---";
         }
 
         private void CH_AutoRelease_CheckedChanged(object sender, bool e)
@@ -248,6 +254,22 @@ namespace SKYNET
         private void WriteLine(object msg)
         {
             LB_Info.Text = msg.ToString();
+        }
+
+        private void Label4_Click(object sender, EventArgs e)
+        {
+            foreach (var addrList in connection.LoadAll<FirewallAddressList>())
+            {
+                Common.Show(addrList.List);
+            }
+
+            var newAddressList = new FirewallAddressList()
+            {
+                Address = "10.0.0.1",
+                List = "wlan1",
+                Comment = "auto_ Hackerprod"
+            };
+            connection.Save(newAddressList);
         }
     }
 }

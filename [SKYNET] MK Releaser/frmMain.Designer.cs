@@ -120,6 +120,7 @@
             this.label4.Size = new System.Drawing.Size(109, 17);
             this.label4.TabIndex = 8;
             this.label4.Text = "Mikrotik Releaser";
+            this.label4.Click += new System.EventHandler(this.Label4_Click);
             // 
             // skyneT_Box3
             // 
@@ -127,8 +128,11 @@
             this.skyneT_Box3.Dock = System.Windows.Forms.DockStyle.Right;
             this.skyneT_Box3.FocusedColor = System.Drawing.Color.Empty;
             this.skyneT_Box3.Image = null;
+            this.skyneT_Box3.ImageSize = 10;
             this.skyneT_Box3.Location = new System.Drawing.Point(522, 0);
             this.skyneT_Box3.MaximumSize = new System.Drawing.Size(34, 26);
+            this.skyneT_Box3.MenuMode = false;
+            this.skyneT_Box3.MenuSeparation = 8;
             this.skyneT_Box3.MinimumSize = new System.Drawing.Size(34, 26);
             this.skyneT_Box3.Name = "skyneT_Box3";
             this.skyneT_Box3.Size = new System.Drawing.Size(34, 26);
@@ -141,8 +145,11 @@
             this.MinimizeBox.Dock = System.Windows.Forms.DockStyle.Right;
             this.MinimizeBox.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(53)))), ((int)(((byte)(64)))), ((int)(((byte)(78)))));
             this.MinimizeBox.Image = global::SKYNET.Properties.Resources.minimise;
+            this.MinimizeBox.ImageSize = 10;
             this.MinimizeBox.Location = new System.Drawing.Point(556, 0);
             this.MinimizeBox.MaximumSize = new System.Drawing.Size(34, 26);
+            this.MinimizeBox.MenuMode = false;
+            this.MinimizeBox.MenuSeparation = 8;
             this.MinimizeBox.MinimumSize = new System.Drawing.Size(34, 26);
             this.MinimizeBox.Name = "MinimizeBox";
             this.MinimizeBox.Size = new System.Drawing.Size(34, 26);
@@ -156,8 +163,11 @@
             this.CloseBox.Dock = System.Windows.Forms.DockStyle.Right;
             this.CloseBox.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(53)))), ((int)(((byte)(64)))), ((int)(((byte)(78)))));
             this.CloseBox.Image = global::SKYNET.Properties.Resources.close;
+            this.CloseBox.ImageSize = 10;
             this.CloseBox.Location = new System.Drawing.Point(590, 0);
             this.CloseBox.MaximumSize = new System.Drawing.Size(34, 26);
+            this.CloseBox.MenuMode = false;
+            this.CloseBox.MenuSeparation = 8;
             this.CloseBox.MinimumSize = new System.Drawing.Size(34, 26);
             this.CloseBox.Name = "CloseBox";
             this.CloseBox.Size = new System.Drawing.Size(34, 26);
@@ -169,6 +179,7 @@
             this.BT_Release.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(61)))), ((int)(((byte)(75)))));
             this.BT_Release.BackColorMouseOver = System.Drawing.Color.Empty;
             this.BT_Release.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BT_Release.Enabled = false;
             this.BT_Release.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.BT_Release.ForeColor = System.Drawing.Color.White;
             this.BT_Release.ForeColorMouseOver = System.Drawing.Color.Empty;
@@ -309,9 +320,9 @@
             this.LB_BoardCores.ForeColor = System.Drawing.Color.White;
             this.LB_BoardCores.Location = new System.Drawing.Point(132, 145);
             this.LB_BoardCores.Name = "LB_BoardCores";
-            this.LB_BoardCores.Size = new System.Drawing.Size(61, 17);
+            this.LB_BoardCores.Size = new System.Drawing.Size(23, 17);
             this.LB_BoardCores.TabIndex = 30;
-            this.LB_BoardCores.Text = "Unknown";
+            this.LB_BoardCores.Text = "---";
             // 
             // LB_TotalHddSpace
             // 
@@ -320,9 +331,9 @@
             this.LB_TotalHddSpace.ForeColor = System.Drawing.Color.White;
             this.LB_TotalHddSpace.Location = new System.Drawing.Point(132, 188);
             this.LB_TotalHddSpace.Name = "LB_TotalHddSpace";
-            this.LB_TotalHddSpace.Size = new System.Drawing.Size(61, 17);
+            this.LB_TotalHddSpace.Size = new System.Drawing.Size(23, 17);
             this.LB_TotalHddSpace.TabIndex = 29;
-            this.LB_TotalHddSpace.Text = "Unknown";
+            this.LB_TotalHddSpace.Text = "---";
             // 
             // LB_MemoryRAM
             // 
@@ -331,9 +342,9 @@
             this.LB_MemoryRAM.ForeColor = System.Drawing.Color.White;
             this.LB_MemoryRAM.Location = new System.Drawing.Point(132, 166);
             this.LB_MemoryRAM.Name = "LB_MemoryRAM";
-            this.LB_MemoryRAM.Size = new System.Drawing.Size(61, 17);
+            this.LB_MemoryRAM.Size = new System.Drawing.Size(23, 17);
             this.LB_MemoryRAM.TabIndex = 28;
-            this.LB_MemoryRAM.Text = "Unknown";
+            this.LB_MemoryRAM.Text = "---";
             // 
             // label20
             // 
@@ -375,9 +386,9 @@
             this.LB_PingStatus.ForeColor = System.Drawing.Color.White;
             this.LB_PingStatus.Location = new System.Drawing.Point(132, 231);
             this.LB_PingStatus.Name = "LB_PingStatus";
-            this.LB_PingStatus.Size = new System.Drawing.Size(61, 17);
+            this.LB_PingStatus.Size = new System.Drawing.Size(23, 17);
             this.LB_PingStatus.TabIndex = 23;
-            this.LB_PingStatus.Text = "Unknown";
+            this.LB_PingStatus.Text = "---";
             // 
             // LB_ConnectionStatus
             // 
@@ -386,9 +397,9 @@
             this.LB_ConnectionStatus.ForeColor = System.Drawing.Color.White;
             this.LB_ConnectionStatus.Location = new System.Drawing.Point(132, 210);
             this.LB_ConnectionStatus.Name = "LB_ConnectionStatus";
-            this.LB_ConnectionStatus.Size = new System.Drawing.Size(61, 17);
+            this.LB_ConnectionStatus.Size = new System.Drawing.Size(23, 17);
             this.LB_ConnectionStatus.TabIndex = 22;
-            this.LB_ConnectionStatus.Text = "Unknown";
+            this.LB_ConnectionStatus.Text = "---";
             // 
             // LB_MikrotikModel
             // 
@@ -397,9 +408,9 @@
             this.LB_MikrotikModel.ForeColor = System.Drawing.Color.White;
             this.LB_MikrotikModel.Location = new System.Drawing.Point(132, 102);
             this.LB_MikrotikModel.Name = "LB_MikrotikModel";
-            this.LB_MikrotikModel.Size = new System.Drawing.Size(61, 17);
+            this.LB_MikrotikModel.Size = new System.Drawing.Size(23, 17);
             this.LB_MikrotikModel.TabIndex = 21;
-            this.LB_MikrotikModel.Text = "Unknown";
+            this.LB_MikrotikModel.Text = "---";
             // 
             // LB_OSVersion
             // 
@@ -408,9 +419,9 @@
             this.LB_OSVersion.ForeColor = System.Drawing.Color.White;
             this.LB_OSVersion.Location = new System.Drawing.Point(132, 124);
             this.LB_OSVersion.Name = "LB_OSVersion";
-            this.LB_OSVersion.Size = new System.Drawing.Size(61, 17);
+            this.LB_OSVersion.Size = new System.Drawing.Size(23, 17);
             this.LB_OSVersion.TabIndex = 20;
-            this.LB_OSVersion.Text = "Unknown";
+            this.LB_OSVersion.Text = "---";
             // 
             // LB_InterfaceComment
             // 
@@ -420,7 +431,7 @@
             this.LB_InterfaceComment.Name = "LB_InterfaceComment";
             this.LB_InterfaceComment.Size = new System.Drawing.Size(160, 17);
             this.LB_InterfaceComment.TabIndex = 19;
-            this.LB_InterfaceComment.Text = "Unknown";
+            this.LB_InterfaceComment.Text = "---";
             // 
             // LB_Interface
             // 
@@ -430,7 +441,7 @@
             this.LB_Interface.Name = "LB_Interface";
             this.LB_Interface.Size = new System.Drawing.Size(160, 17);
             this.LB_Interface.TabIndex = 18;
-            this.LB_Interface.Text = "Unknown";
+            this.LB_Interface.Text = "---";
             // 
             // LB_ClientIP
             // 
@@ -439,9 +450,9 @@
             this.LB_ClientIP.ForeColor = System.Drawing.Color.White;
             this.LB_ClientIP.Location = new System.Drawing.Point(132, 39);
             this.LB_ClientIP.Name = "LB_ClientIP";
-            this.LB_ClientIP.Size = new System.Drawing.Size(61, 17);
+            this.LB_ClientIP.Size = new System.Drawing.Size(23, 17);
             this.LB_ClientIP.TabIndex = 17;
-            this.LB_ClientIP.Text = "Unknown";
+            this.LB_ClientIP.Text = "---";
             // 
             // LB_Host
             // 
@@ -450,9 +461,9 @@
             this.LB_Host.ForeColor = System.Drawing.Color.White;
             this.LB_Host.Location = new System.Drawing.Point(132, 17);
             this.LB_Host.Name = "LB_Host";
-            this.LB_Host.Size = new System.Drawing.Size(61, 17);
+            this.LB_Host.Size = new System.Drawing.Size(23, 17);
             this.LB_Host.TabIndex = 16;
-            this.LB_Host.Text = "Unknown";
+            this.LB_Host.Text = "---";
             // 
             // label9
             // 
