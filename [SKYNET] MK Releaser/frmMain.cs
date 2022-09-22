@@ -1,6 +1,7 @@
 ﻿using SKYNET.GUI;
 using SKYNET.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -19,6 +20,7 @@ namespace SKYNET
     {
         private ITikConnection connection;
         private FirewallAddressList CurrentFirewallAddress;
+        private SystemResource sysRes;
         private bool _connected;
 
         private bool Connected
@@ -70,20 +72,20 @@ namespace SKYNET
             });
         }
 
-        public static string GetIPAddress()
+        public static List<string> GetIPAddress()
         {
+			var Addresses = new List<string>();
             string hostName = Dns.GetHostName();
             IPHostEntry hostEntry = Dns.GetHostEntry(hostName);
-            IPAddress iPAddress = null;
             IPAddress[] addressList = hostEntry.AddressList;
             foreach (IPAddress address in addressList)
             {
                 if (address.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    iPAddress = address;
+                    Addresses.Add(address.ToString());
                 }
             }
-            return iPAddress.ToString();
+            return Addresses;
         }
 
         private void CloseBox_BoxClicked(object sender, EventArgs e)
@@ -120,27 +122,27 @@ namespace SKYNET
                         WriteLine($"Connecting to {TB_Host.Text}, please wait...");
                         connection.Open(TB_Host.Text, TB_Username.Text, TB_Password.Text);
 
-                        var sysRes = connection.LoadSingle<SystemResource>();
-
-                        string IPAddress = GetIPAddress();
+                        sysRes = connection.LoadSingle<SystemResource>();
+						var ipAddress = "";
 
                         foreach (var AddressList in connection.LoadAll<FirewallAddressList>())
                         {
-                            if (IPAddress == AddressList.Address)
+                            if (GetIPAddress().Contains(AddressList.Address))
                             {
                                 CurrentFirewallAddress = AddressList;
+								ipAddress = AddressList.Address;
                             }
                         }
 
                         LB_Host.Text = TB_Host.Text;
-                        LB_ClientIP.Text = IPAddress;
-                        LB_Interface.Text = CurrentFirewallAddress == null ? "--- Firewall Address List" : CurrentFirewallAddress.List;
+                        LB_ClientIP.Text = ipAddress;
+                        LB_Interface.Text = CurrentFirewallAddress == null ? "Unknown Firewall Address List" : CurrentFirewallAddress.List;
                         LB_InterfaceComment.Text = CurrentFirewallAddress?.Comment;
-                        LB_OSVersion.Text = sysRes == null ? "--- OS version" : sysRes.Version;
-                        LB_MikrotikModel.Text = sysRes == null ? "--- Mikrotik Model" : sysRes.BoardName;
-                        LB_BoardCores.Text = sysRes == null ? "--- Board Cores" : sysRes.CpuCount.ToString();
-                        LB_MemoryRAM.Text = sysRes == null ? "--- Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory);
-                        LB_TotalHddSpace.Text = sysRes == null ? "--- HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace);
+                        LB_OSVersion.Text = sysRes == null ? "Unknown OS version" : sysRes.Version;
+                        LB_MikrotikModel.Text = sysRes == null ? "Unknown Mikrotik Model" : sysRes.BoardName;
+                        LB_BoardCores.Text = sysRes == null ? "Unknown Board Cores" : sysRes.CpuCount.ToString();
+                        LB_MemoryRAM.Text = sysRes == null ? "Unknown Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory - sysRes.FreeMemory) + " / " + Common.LongToMbytes(sysRes.TotalMemory);
+                        LB_TotalHddSpace.Text = sysRes == null ? "Unknown HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace - sysRes.FreeHddSpace) + " / " + Common.LongToMbytes(sysRes.TotalHddSpace);
                         LB_ConnectionStatus.Text = "Connected";
 
                         Connected = true;
@@ -185,6 +187,15 @@ namespace SKYNET
                         if (pingReply.Status == IPStatus.Success)
                         {
                             LB_PingStatus.Text = pingReply.RoundtripTime.ToString() + " ms";
+                            try
+                            {
+                                LB_MemoryRAM.Text = sysRes == null ? "Unknown Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory - sysRes.FreeMemory) + " / " + Common.LongToMbytes(sysRes.TotalMemory);
+                                LB_TotalHddSpace.Text = sysRes == null ? "Unknown HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace - sysRes.FreeHddSpace) + " / " + Common.LongToMbytes(sysRes.TotalHddSpace);
+                            }
+                            catch 
+                            {
+                            }
+
                             Thread.Sleep(1000);
                         }
                         else
