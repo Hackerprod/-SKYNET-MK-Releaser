@@ -170,47 +170,44 @@ namespace SKYNET
             });
         }
 
-        private void StartPing(string host)
+        private async void StartPing(string host)
         {
-            Task.Run(delegate
+            while (Connected)
             {
-                while (Connected)
+                try
                 {
-                    Ping ping = new Ping();
-                    int timeout = 100;
-                    PingOptions pingOption = new PingOptions(16, true);
-                    byte[] buffer = new byte[32];
+                    TcpClient TcpClient = new TcpClient();
+
+                    DateTime SentDateTime = DateTime.Now;
+
+                    await TcpClient.ConnectAsync(host, 8728);
+
+                    TimeSpan span = DateTime.Now - SentDateTime;
+                    long RoundtripTime = span.Milliseconds;
+
+                    LB_PingStatus.Text = RoundtripTime + " ms";
+
                     try
                     {
-                        PingReply pingReply = ping.Send(host, timeout, buffer, pingOption);
-
-                        if (pingReply.Status == IPStatus.Success)
-                        {
-                            LB_PingStatus.Text = pingReply.RoundtripTime.ToString() + " ms";
-                            try
-                            {
-                                LB_MemoryRAM.Text = sysRes == null ? "Unknown Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory - sysRes.FreeMemory) + " / " + Common.LongToMbytes(sysRes.TotalMemory);
-                                LB_TotalHddSpace.Text = sysRes == null ? "Unknown HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace - sysRes.FreeHddSpace) + " / " + Common.LongToMbytes(sysRes.TotalHddSpace);
-                            }
-                            catch
-                            {
-                            }
-
-                            Thread.Sleep(1000);
-                        }
-                        else
-                        {
-                            LB_PingStatus.Text = "Offline";
-                            Thread.Sleep(1000);
-                        }
+                        LB_MemoryRAM.Text = sysRes == null ? "Unknown Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory - sysRes.FreeMemory) + " / " + Common.LongToMbytes(sysRes.TotalMemory);
+                        LB_TotalHddSpace.Text = sysRes == null ? "Unknown HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace - sysRes.FreeHddSpace) + " / " + Common.LongToMbytes(sysRes.TotalHddSpace);
                     }
-                    catch (Exception)
+                    catch
                     {
-                        LB_PingStatus.Text = "Offline";
-                        Thread.Sleep(1000);
                     }
+
+                    TcpClient.Close();
+
+                    Thread.Sleep(1000);
                 }
-            });
+                catch
+                {
+                    LB_PingStatus.Text = "Offline";
+                    Thread.Sleep(1000);
+                }
+
+            }
+
             LB_PingStatus.Text = "---";
             BT_Auth.Enabled = true;
         }
