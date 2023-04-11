@@ -74,7 +74,7 @@ namespace SKYNET
 
         public static List<string> GetIPAddress()
         {
-			var Addresses = new List<string>();
+            var Addresses = new List<string>();
             string hostName = Dns.GetHostName();
             IPHostEntry hostEntry = Dns.GetHostEntry(hostName);
             IPAddress[] addressList = hostEntry.AddressList;
@@ -123,14 +123,14 @@ namespace SKYNET
                         connection.Open(TB_Host.Text, TB_Username.Text, TB_Password.Text);
 
                         sysRes = connection.LoadSingle<SystemResource>();
-						var ipAddress = "";
+                        var ipAddress = "";
 
                         foreach (var AddressList in connection.LoadAll<FirewallAddressList>())
                         {
                             if (GetIPAddress().Contains(AddressList.Address))
                             {
                                 CurrentFirewallAddress = AddressList;
-								ipAddress = AddressList.Address;
+                                ipAddress = AddressList.Address;
                             }
                         }
 
@@ -167,7 +167,7 @@ namespace SKYNET
                     WriteLine($"Error connecting to {TB_Host.Text}");
                     BT_Auth.Enabled = true;
                 }
-            }); 
+            });
         }
 
         private void StartPing(string host)
@@ -192,7 +192,7 @@ namespace SKYNET
                                 LB_MemoryRAM.Text = sysRes == null ? "Unknown Memory RAM" : Common.LongToMbytes(sysRes.TotalMemory - sysRes.FreeMemory) + " / " + Common.LongToMbytes(sysRes.TotalMemory);
                                 LB_TotalHddSpace.Text = sysRes == null ? "Unknown HDD space" : Common.LongToMbytes(sysRes.TotalHddSpace - sysRes.FreeHddSpace) + " / " + Common.LongToMbytes(sysRes.TotalHddSpace);
                             }
-                            catch 
+                            catch
                             {
                             }
 
@@ -200,7 +200,7 @@ namespace SKYNET
                         }
                         else
                         {
-                            LB_PingStatus.Text = "Offline"; 
+                            LB_PingStatus.Text = "Offline";
                             Thread.Sleep(1000);
                         }
                     }
@@ -220,9 +220,10 @@ namespace SKYNET
             if (Connected)
             {
                 WriteLine("Releasing DHCP client");
+                var validInterface = GetValidInterface(CurrentFirewallAddress.List);
                 foreach (var DhcpClient in connection.LoadAll<IpDhcpClient>())
                 {
-                    if (DhcpClient.Interface == CurrentFirewallAddress.List)
+                    if (DhcpClient.Interface == validInterface)
                     {
                         DhcpClient.Release(connection);
                         WriteLine($"Client {CurrentFirewallAddress.Address} with interface {CurrentFirewallAddress.List} released successfully");
@@ -233,6 +234,16 @@ namespace SKYNET
             {
                 WriteLine("Please connect to Mikrotik first");
             }
+        }
+
+        private string GetValidInterface(string List)
+        {
+            var validName = List;
+            if (List.StartsWith("VPN_"))
+            {
+                validName = List.Replace("VPN_", "wlan");
+            }
+            return validName;
         }
 
         private void ResetFields()
@@ -269,18 +280,37 @@ namespace SKYNET
 
         private void Label4_Click(object sender, EventArgs e)
         {
-            foreach (var addrList in connection.LoadAll<FirewallAddressList>())
-            {
-                Common.Show(addrList.List);
-            }
-
-            var newAddressList = new FirewallAddressList()
-            {
-                Address = "10.0.0.1",
-                List = "wlan1",
-                Comment = "auto_ Hackerprod"
-            };
-            connection.Save(newAddressList);
+            SaveToAddressList("10.0.0.1", "wlan1", "auto_ Hackerprod");
+            SaveToAddressList("10.0.0.2", "wlan2", "Elier");
+            SaveToAddressList("10.0.0.3", "wlan3", "Dairon");
+            SaveToAddressList("10.0.0.4", "wlan4", "Alejandro");
+            SaveToAddressList("10.0.0.5", "wlan5", "Harry");
+            SaveToAddressList("10.0.0.6", "wlan1", "Hackerprod movil");
+            SaveToAddressList("10.0.0.7", "wlan1", "Day movil");
+            SaveToAddressList("10.0.0.8", "wlan8", "Yanelis Febles");
+            SaveToAddressList("10.0.0.9", "wlan9", "Yoel Cricúa");
+            SaveToAddressList("10.0.0.10", "wlan10", "Elier padre");
+            SaveToAddressList("10.0.0.13", "wlan3", "Dairon movil");
+            SaveToAddressList("10.0.0.14", "wlan4", "Alejandro movil");
+            SaveToAddressList("10.0.0.15", "wlan15", "Arianné");
+            SaveToAddressList("10.0.0.17", "wlan17", "Osmel barrio");
         }
+
+        private void SaveToAddressList(string Address, string List, string Comment)
+        {
+            try
+            {
+                connection.Save(new FirewallAddressList()
+                {
+                    Address = Address,
+                    List = List,
+                    Comment = Comment
+                });
+            }
+            catch 
+            {
+            }
+        }
+
     }
 }
